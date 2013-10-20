@@ -2,18 +2,11 @@
 using System.Collections;
 
 public class Player : Character {
-	
-	public float BASE_MOVE_SPEED;
-	public float BASE_JUMP_SPEED;
-	public float GRAVITY;
-	
+		
 	// Use this for initialization
 	protected override void Start()
 	{
 		base.Start();
-		moveSpeed = BASE_MOVE_SPEED;
-		jumpSpeed = BASE_JUMP_SPEED;
-		gravity = GRAVITY;
 	}
 	
 	// Update is called once per frame
