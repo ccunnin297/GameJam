@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Player : Character {
 		
+	public int damageInvDuration;
+	
 	// Use this for initialization
 	protected override void Start()
 	{
@@ -23,6 +25,8 @@ public class Player : Character {
 			MoveLeft();
 		if(Input.GetKey(KeyCode.RightArrow))
 			MoveRight();
+		if(Input.GetKey(KeyCode.UpArrow))
+			AimUp();
 		if(Input.GetKeyDown(KeyCode.Space))
 			Jump();
 		if(Input.GetKeyDown(KeyCode.F))
@@ -42,7 +46,14 @@ public class Player : Character {
 			case "Test":
 				hitpoints--;
 				break;
-		}
+		} 
+	}
+	
+	protected void HitEnemy()
+	{
+		hitpoints--;
+		Invulnerable(damageInvDuration);
+		Flash();
 	}
 	
 	protected override void Die()

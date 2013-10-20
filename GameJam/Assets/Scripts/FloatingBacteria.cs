@@ -31,25 +31,37 @@ public class FloatingBacteria : Enemy
 			{
 				case 0:
 					if(gameObject.transform.position.x < initPosition.x - moveDistance)
-						dir = 1;
+					{
+						dir = Random.Range(0, 2);
+						if(dir == 0)
+							dir = 3;
+					}
 					else
 						MoveLeft();
 					break;
 				case 1:
 					if(gameObject.transform.position.x > initPosition.x + moveDistance)
-						dir = 0;
+					{
+						dir = Random.Range(0, 2);
+						if(dir == 1)
+							dir = 3;
+					}
 					else
 						MoveRight();
 					break;
 				case 2:
-					if(gameObject.transform.position.y < initPosition.y - moveDistance)
-						dir = 3;
+					if(gameObject.transform.position.y > initPosition.y + moveDistance)
+					{
+						dir = Random.Range(0, 2);
+						if(dir == 2)
+							dir = 3;
+					}
 					else
 						MoveUp();
 					break;
 				case 3:
-					if(gameObject.transform.position.y > initPosition.y + moveDistance)
-						dir = 2;
+					if(gameObject.transform.position.y < initPosition.y - moveDistance)
+						dir = Random.Range(0, 2);
 					else
 						MoveDown();
 					break;

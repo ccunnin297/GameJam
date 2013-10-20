@@ -42,6 +42,7 @@ public class Virus : Enemy
 		switch(type)
 		{
 			case "Test":
+				Flash();
 				hitpoints--;
 				break;
 		}

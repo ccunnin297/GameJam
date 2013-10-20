@@ -15,4 +15,9 @@ public abstract class Enemy : Character {
 	{
 		Destroy(gameObject);
 	}
+	
+	protected void OnBecameVisible()
+	{
+		enabled = true;
+	}
 }

@@ -5,21 +5,34 @@ public abstract class Character : MonoBehaviour {
 
 	public GameObject projectile;
 	public int hitpoints;
-	
 	public float moveSpeed;
 	public float jumpSpeed;
 	public float gravity;
+	public int flashDuration;
+	public int flashes;
+	public int shootCooldown;
 	
 	protected Vector3 direction;
 	protected Vector3 velocity;
+	
+	protected bool invulnerable;
+	
+	int flashCounter;
+	int flashesCounter;
+	bool flashing;
+	
+	int shootCounter;
+	bool jumping;
+	bool falling;
 	
 	bool jump;
 	bool left;
 	bool right;
 	bool up;
 	bool down;
+	bool aimingUp;
 	
-	CharacterController controller;
+	protected CharacterController controller;
 	
 	// Use this for initialization
 	protected virtual void Start()
@@ -27,6 +40,10 @@ public abstract class Character : MonoBehaviour {
 		velocity = Vector3.zero;
 		direction = new Vector3(1, 0, 0);
 		controller = (CharacterController)gameObject.GetComponent("CharacterController");
+		flashCounter = 0;
+		flashesCounter = 0;
+		shootCounter = shootCooldown;
+		invulnerable = false;
 	}
 	
 	// Update is called once per frame
@@ -47,18 +64,40 @@ public abstract class Character : MonoBehaviour {
 		
 		if(up && !down)
 		{
-			velocity.y = -moveSpeed;
+			velocity.y = moveSpeed;
 		}
 		else if(!up && down)
 		{
-			velocity.y = moveSpeed;
+			velocity.y = -moveSpeed;
 		}
+		else if(gravity == 0)
+			velocity.y = 0;
 		else
 		{
-			if(controller.isGrounded && jump)
+			if(controller.isGrounded && jump && !jumping)
 			{			
 				velocity.y = jumpSpeed;
 				jump = false;
+				jumping = true;
+			}
+			else if(jumping && controller.isGrounded)
+			{
+				jumping = false;
+			}
+			else if(jumping)
+			{
+				if((controller.collisionFlags & CollisionFlags.CollidedAbove) != 0)
+					velocity.y = 0;
+			}
+			
+			if(!jumping && !falling && !controller.isGrounded)
+			{
+				falling = true;
+				velocity.y = 0;
+			}
+			else if(falling && controller.isGrounded)
+			{
+				falling = false;
 			}
 		}
 		
@@ -67,11 +106,40 @@ public abstract class Character : MonoBehaviour {
 		up = false;
 		down = false;
 		
-		velocity.y -= gravity * Time.deltaTime;
+		if(falling || jumping)
+			velocity.y -= gravity * Time.deltaTime;
 		controller.Move(velocity * Time.deltaTime);
+		
+		if(flashing)
+		{
+			MeshRenderer ren = (MeshRenderer)GetComponent("MeshRenderer");
+			if(flashCounter < flashDuration)
+			{
+				flashCounter++;
+			}
+			else
+			{
+				ren.enabled = !ren.enabled;
+				if(flashesCounter < flashes)
+				{
+					flashesCounter++;
+				}
+				else
+				{
+					flashesCounter = 0;
+					flashing = false;
+					ren.enabled = true;
+				}
+				flashCounter = 0;
+			}
+		}
 		
 		if(hitpoints <= 0)
 			Die();
+		
+		if(shootCounter < shootCooldown)
+			shootCounter++;
+		aimingUp = false;
 	}
 	
 	protected void MoveLeft()
@@ -96,19 +164,49 @@ public abstract class Character : MonoBehaviour {
 	
 	protected void Jump()
 	{
-		jump = true;
+		if(!jumping)
+			jump = true;
+	}
+	
+	protected void AimUp()
+	{
+		aimingUp = true;
 	}
 	
 	protected void Shoot()
 	{
+		if(shootCounter < shootCooldown)
+			return;
+		shootCounter = 0;
+		
 		//spawn a projectile with a velocity
 		Vector3 position = gameObject.transform.position;
-		if(direction.x == 1)
-			position.x += 1.0f;
-		else if(direction.x == -1)
-			position.x -= 1.0f;
-		GameObject projectileClone = (GameObject)Instantiate(projectile, position, gameObject.transform.rotation);
-		projectileClone.SendMessage("SetDirection", direction, SendMessageOptions.DontRequireReceiver);
+		if(aimingUp)
+		{
+			position.y += 1.0f;
+			GameObject projectileClone = (GameObject)Instantiate(projectile, position, gameObject.transform.rotation);
+			projectileClone.SendMessage("SetDirection", new Vector3(0, 1, 0), SendMessageOptions.DontRequireReceiver);
+		}
+		else 
+		{
+			if(direction.x == 1)
+				position.x += 1.0f;
+			else
+				position.x -= 1.0f;
+			GameObject projectileClone = (GameObject)Instantiate(projectile, position, gameObject.transform.rotation);
+			projectileClone.SendMessage("SetDirection", direction, SendMessageOptions.DontRequireReceiver);
+		}
+	}
+	
+	//Flash to indicate damage
+	protected void Flash()
+	{
+		flashing = true;
+	}
+	
+	protected void Invulnerable(int duration)
+	{
+		
 	}
 	
 	protected abstract void OnBulletHit(string type);
