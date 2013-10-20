@@ -4,10 +4,11 @@ using System.Collections;
 public abstract class Character : MonoBehaviour {
 
 	public GameObject projectile;
+	public int hitpoints;
 	
-	protected float moveSpeed;
-	protected float jumpSpeed;
-	protected float gravity;
+	public float moveSpeed;
+	public float jumpSpeed;
+	public float gravity;
 	
 	protected Vector3 direction;
 	protected Vector3 velocity;
@@ -15,6 +16,8 @@ public abstract class Character : MonoBehaviour {
 	bool jump;
 	bool left;
 	bool right;
+	bool up;
+	bool down;
 	
 	CharacterController controller;
 	
@@ -42,17 +45,33 @@ public abstract class Character : MonoBehaviour {
 		else
 			velocity.x = 0;
 		
+		if(up && !down)
+		{
+			velocity.y = -moveSpeed;
+		}
+		else if(!up && down)
+		{
+			velocity.y = moveSpeed;
+		}
+		else
+		{
+			if(controller.isGrounded && jump)
+			{			
+				velocity.y = jumpSpeed;
+				jump = false;
+			}
+		}
+		
 		left = false;
 		right = false;
-		
-		if(controller.isGrounded && jump)
-		{			
-			velocity.y = jumpSpeed;
-			jump = false;
-		}
+		up = false;
+		down = false;
 		
 		velocity.y -= gravity * Time.deltaTime;
 		controller.Move(velocity * Time.deltaTime);
+		
+		if(hitpoints <= 0)
+			Die();
 	}
 	
 	protected void MoveLeft()
@@ -63,6 +82,16 @@ public abstract class Character : MonoBehaviour {
 	protected void MoveRight()
 	{
 		right = true;
+	}
+	
+	protected void MoveUp()
+	{
+		up = true;
+	}
+	
+	protected void MoveDown()
+	{
+		down = true;
 	}
 	
 	protected void Jump()
@@ -79,6 +108,10 @@ public abstract class Character : MonoBehaviour {
 		else if(direction.x == -1)
 			position.x -= 1.0f;
 		GameObject projectileClone = (GameObject)Instantiate(projectile, position, gameObject.transform.rotation);
-		projectileClone.SendMessage("SetDirection", direction);
+		projectileClone.SendMessage("SetDirection", direction, SendMessageOptions.DontRequireReceiver);
 	}
+	
+	protected abstract void OnBulletHit(string type);
+	
+	protected abstract void Die();
 }

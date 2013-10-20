@@ -9,10 +9,10 @@ public abstract class Enemy : Character {
 		base.Update();
 	}
 	
-	protected virtual void Destroy()
+	protected abstract void UpdateBehavior();
+	
+	protected override void Die()
 	{
 		Destroy(gameObject);
 	}
-	
-	protected abstract void UpdateBehavior();
 }

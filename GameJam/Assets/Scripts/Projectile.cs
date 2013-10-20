@@ -1,33 +1,33 @@
 using UnityEngine;
 using System.Collections;
 
-public abstract class Projectile : MonoBehaviour
+public class Projectile : MonoBehaviour
 {
 	Vector3 velocity;
 	Vector3 direction;
 	
-	protected string type;
+	public string type;
 	
-	protected float speed;
+	public float speed;
 	
 	// Update is called once per frame
-	void Update()
+	protected void Update()
 	{
 		gameObject.transform.Translate(velocity);
 	}
 	
-	void OnCollisionEnter(Collision coll)
+	protected void OnTriggerEnter(Collider collider)
 	{
-		coll.gameObject.SendMessageUpwards("OnBulletHit", type, SendMessageOptions.DontRequireReceiver);
+		collider.gameObject.SendMessageUpwards("OnBulletHit", type, SendMessageOptions.DontRequireReceiver);
 		Destroy(gameObject);
 	}
 		
-	void OnBecameInvisible()
+	protected void OnBecameInvisible()
 	{
 		Destroy(gameObject);
 	}
 	
-	void SetDirection(Vector3 dir)
+	protected void SetDirection(Vector3 dir)
 	{
 		direction = dir;
 		velocity = speed * direction;

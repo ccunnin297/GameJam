@@ -3,9 +3,9 @@ using System.Collections;
 
 public class Player : Character {
 	
-	const float BASE_MOVE_SPEED = 10.0f;
-	const float BASE_JUMP_SPEED = 20.0f;
-	const float GRAVITY = 35.0f;
+	public float BASE_MOVE_SPEED;
+	public float BASE_JUMP_SPEED;
+	public float GRAVITY;
 	
 	// Use this for initialization
 	protected override void Start()
@@ -40,5 +40,20 @@ public class Player : Character {
 	{
 		//GameObject cam = GameObject.FindGameObjectWithTag("MainCamera");
 		//cam.transform.Translate(velocity.x, 0, 0);
+	}
+	
+	protected override void OnBulletHit(string type)
+	{
+		switch(type)
+		{
+			case "Test":
+				hitpoints--;
+				break;
+		}
+	}
+	
+	protected override void Die()
+	{
+		Destroy(gameObject);
 	}
 }
