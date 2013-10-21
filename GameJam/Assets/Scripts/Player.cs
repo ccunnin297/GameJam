@@ -2,13 +2,12 @@
 using System.Collections;
 
 public class Player : Character {
-		
-	public int damageInvDuration;
 	
 	// Use this for initialization
 	protected override void Start()
 	{
 		base.Start();
+		gameObject.tag = "Player";
 	}
 	
 	// Update is called once per frame
@@ -49,11 +48,20 @@ public class Player : Character {
 		} 
 	}
 	
+	protected void OnTriggerEnter(Collider collider)
+	{
+		if(collider.gameObject.name == "EnemyCollider")
+			HitEnemy();
+	}
+	
 	protected void HitEnemy()
 	{
-		hitpoints--;
-		Invulnerable(damageInvDuration);
-		Flash();
+		if(!invulnerable)
+		{
+			hitpoints--;
+			Invulnerable();
+			Flash();
+		}
 	}
 	
 	protected override void Die()

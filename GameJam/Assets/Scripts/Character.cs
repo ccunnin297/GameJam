@@ -11,6 +11,8 @@ public abstract class Character : MonoBehaviour {
 	public int flashDuration;
 	public int flashes;
 	public int shootCooldown;
+	public int shootSpawnDistance;
+	public int invDuration;
 	
 	protected Vector3 direction;
 	protected Vector3 velocity;
@@ -20,6 +22,8 @@ public abstract class Character : MonoBehaviour {
 	int flashCounter;
 	int flashesCounter;
 	bool flashing;
+	
+	int invCounter;
 	
 	int shootCounter;
 	bool jumping;
@@ -134,6 +138,19 @@ public abstract class Character : MonoBehaviour {
 			}
 		}
 		
+		if(invulnerable)
+		{
+			if(invCounter < invDuration)
+			{
+				invCounter++;	
+			}
+			else
+			{
+				invCounter = 0;
+				invulnerable = false;
+			}
+		}
+		
 		if(hitpoints <= 0)
 			Die();
 		
@@ -183,16 +200,16 @@ public abstract class Character : MonoBehaviour {
 		Vector3 position = gameObject.transform.position;
 		if(aimingUp)
 		{
-			position.y += 1.0f;
+			position.y += shootSpawnDistance;
 			GameObject projectileClone = (GameObject)Instantiate(projectile, position, gameObject.transform.rotation);
 			projectileClone.SendMessage("SetDirection", new Vector3(0, 1, 0), SendMessageOptions.DontRequireReceiver);
 		}
 		else 
 		{
 			if(direction.x == 1)
-				position.x += 1.0f;
+				position.x += shootSpawnDistance;
 			else
-				position.x -= 1.0f;
+				position.x -= shootSpawnDistance;
 			GameObject projectileClone = (GameObject)Instantiate(projectile, position, gameObject.transform.rotation);
 			projectileClone.SendMessage("SetDirection", direction, SendMessageOptions.DontRequireReceiver);
 		}
@@ -204,9 +221,9 @@ public abstract class Character : MonoBehaviour {
 		flashing = true;
 	}
 	
-	protected void Invulnerable(int duration)
+	protected void Invulnerable()
 	{
-		
+		invulnerable = true;
 	}
 	
 	protected abstract void OnBulletHit(string type);

@@ -20,6 +20,8 @@ public class FlyingBacteria : Enemy
 		if(!chasing)
 		{
 			GameObject player = GameObject.FindGameObjectWithTag("Player");
+			if(player == null)
+				return;
 			if(Mathf.Abs(player.transform.position.y - gameObject.transform.position.y) < verticalRange)
 			{
 				chasing = true;
