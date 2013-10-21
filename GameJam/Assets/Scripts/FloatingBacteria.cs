@@ -73,27 +73,5 @@ public class FloatingBacteria : Enemy
 			dir = Random.Range(0, 3);
 		}
 	}
-	
-	protected override void OnBulletHit(string type)
-	{
-		switch(type)
-		{
-			case "Test":
-				hitpoints--;
-				break;
-			case "Ice":
-				//Set RGB
-			    Color newColor = new Color(0, 255, 0, 1);
-			     
-			    MeshRenderer gameObjectRenderer = gameObject.GetComponent<MeshRenderer>();
-			     
-				//Set shader
-			    Material newMaterial = new Material(Shader.Find("Diffuse"));
-			     
-			    newMaterial.color = newColor;
-			    gameObjectRenderer.material = newMaterial;
-				break;
-		}
-	}
 }
 

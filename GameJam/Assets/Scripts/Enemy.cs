@@ -31,4 +31,5 @@ public abstract class Enemy : Character {
 	{
 		enabled = true;
 	}
+	
 }

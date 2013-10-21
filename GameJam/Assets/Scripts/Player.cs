@@ -38,16 +38,6 @@ public class Player : Character {
 		//cam.transform.Translate(velocity.x, 0, 0);
 	}
 	
-	protected override void OnBulletHit(string type)
-	{
-		switch(type)
-		{
-			case "Test":
-				hitpoints--;
-				break;
-		} 
-	}
-	
 	protected void OnTriggerEnter(Collider collider)
 	{
 		if(collider.gameObject.name == "EnemyCollider")

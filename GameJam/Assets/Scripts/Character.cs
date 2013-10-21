@@ -226,7 +226,12 @@ public abstract class Character : MonoBehaviour {
 		invulnerable = true;
 	}
 	
-	protected abstract void OnBulletHit(string type);
+	protected void OnBulletHit(string type)
+	{
+		Invulnerable();
+		Flash();
+		hitpoints--;
+	}
 	
 	protected abstract void Die();
 }

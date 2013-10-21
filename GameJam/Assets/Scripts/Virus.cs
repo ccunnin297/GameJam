@@ -37,15 +37,6 @@ public class Virus : Enemy
 		}
 	}
 	
-	protected override void OnBulletHit(string type)
-	{
-		switch(type)
-		{
-			case "Test":
-				Flash();
-				hitpoints--;
-				break;
-		}
-	}
+
 }
 
